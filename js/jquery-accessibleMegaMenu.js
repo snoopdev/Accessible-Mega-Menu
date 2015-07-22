@@ -55,7 +55,8 @@ limitations under the License.
             panelGroupClass: "accessible-megamenu-panel-group", // default css class for a group of items within a megamenu panel
             hoverClass: "hover", // default css class for the hover state
             focusClass: "focus", // default css class for the focus state
-            openClass: "open" // default css class for the open state
+            openClass: "open", // default css class for the open state
+            panelDelay: 0 // default delay for megamenu panel
         },
         Keyboard = {
             BACKSPACE: 8,
@@ -256,23 +257,26 @@ limitations under the License.
                 }
             } else {
                 clearTimeout(that.focusTimeoutID);
-                topli.siblings()
-                    .find('[aria-expanded]')
-                    .attr('aria-expanded', 'false')
-                    .removeClass(settings.openClass)
-                    .filter('.' + settings.panelClass)
-                    .attr('aria-hidden', 'true');
-                topli.find('[aria-expanded]')
-                    .attr('aria-expanded', 'true')
-                    .addClass(settings.openClass)
-                    .filter('.' + settings.panelClass)
-                    .attr('aria-hidden', 'false');
-                if (event.type === 'mouseover' && target.is(':tabbable') && topli.length === 1 && panel.length === 0 && menu.has(document.activeElement).length > 0) {
-                    target.focus();
-                    that.justFocused = false;
-                }
 
-                _toggleExpandedEventHandlers.call(that);
+                setTimeout(function() {
+                    topli.siblings()
+                        .find('[aria-expanded]')
+                        .attr('aria-expanded', 'false')
+                        .removeClass(settings.openClass)
+                        .filter('.' + settings.panelClass)
+                        .attr('aria-hidden', 'true');
+                    topli.find('[aria-expanded]')
+                        .attr('aria-expanded', 'true')
+                        .addClass(settings.openClass)
+                        .filter('.' + settings.panelClass)
+                        .attr('aria-hidden', 'false');
+                    if (event.type === 'mouseover' && target.is(':tabbable') && topli.length === 1 && panel.length === 0 && menu.has(document.activeElement).length > 0) {
+                        target.focus();
+                        that.justFocused = false;
+                    }
+
+                    _toggleExpandedEventHandlers.call(that);
+                }, settings.panelDelay);
             }
         };
 
